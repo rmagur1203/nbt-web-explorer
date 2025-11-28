@@ -665,21 +665,19 @@ export function Chunk3DViewer({
     });
 
     // Add water blocks for underwater plants (kelp, seagrass, etc.)
-    const underwaterPlantPositions = new Set<string>();
     const waterBlocksToAdd: BlockData[] = [];
     
     filtered.forEach((block) => {
       if (isUnderwaterPlant(block.blockName || "")) {
         const [x, y, z] = block.position;
-        const posKey = `${x},${y},${z}`;
-        underwaterPlantPositions.add(posKey);
         // Add a virtual water block at the same position
         waterBlocksToAdd.push({
           position: [x, y, z],
           blockId: 0,
+          blockData: 0,
+          lighting: block.lighting,
+          biome: block.biome,
           blockName: "minecraft:water",
-          blockLight: block.blockLight,
-          skyLight: block.skyLight,
         });
       }
     });
@@ -1102,10 +1100,6 @@ export function Chunk3DViewer({
             );
             missingTextureTypes.add(name);
           });
-          console.log(
-            "Blocks without textures:",
-            Array.from(missingTextureTypes).sort()
-          );
 
           const colorMaterial = new THREE.MeshLambertMaterial({
             vertexColors: false,
@@ -1139,13 +1133,6 @@ export function Chunk3DViewer({
           group.add(colorMesh);
         }
 
-        console.log(
-          "Three.js: rendered",
-          processedBlocks.length,
-          "blocks (",
-          crossModelBlocks.size,
-          "cross model types)"
-        );
       };
 
       createTexturedMeshes();
@@ -1185,11 +1172,6 @@ export function Chunk3DViewer({
       }
 
       group.add(mesh);
-      console.log(
-        "Three.js: rendered",
-        processedBlocks.length,
-        "blocks (colors only)"
-      );
     }
   }, [processedBlocks, isInitialized, useTextures]);
 

@@ -258,13 +258,6 @@ export const blockTextures: Record<string, { top: string; side: string; bottom?:
   amethyst_block: { top: "amethyst_block.png", side: "amethyst_block.png" },
   budding_amethyst: { top: "budding_amethyst.png", side: "budding_amethyst.png" },
   
-  // Dripstone
-  dripstone_block: { top: "dripstone_block.png", side: "dripstone_block.png" },
-  
-  // Calcite & Tuff
-  calcite: { top: "calcite.png", side: "calcite.png" },
-  tuff: { top: "tuff.png", side: "tuff.png" },
-  
   // Copper variants
   exposed_copper: { top: "exposed_copper.png", side: "exposed_copper.png" },
   weathered_copper: { top: "weathered_copper.png", side: "weathered_copper.png" },

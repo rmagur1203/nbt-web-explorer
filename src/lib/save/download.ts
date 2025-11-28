@@ -91,7 +91,7 @@ export async function downloadNbtFile(
   compressed: boolean = true
 ): Promise<void> {
   const buffer = await serializeNbt(data, compressed);
-  const blob = new Blob([buffer], { type: "application/octet-stream" });
+  const blob = new Blob([new Uint8Array(buffer)], { type: "application/octet-stream" });
   saveAs(blob, filename);
 }
 
@@ -101,7 +101,7 @@ export function downloadFile(
   filename: string,
   mimeType: string = "application/octet-stream"
 ): void {
-  const blob = new Blob([data], { type: mimeType });
+  const blob = new Blob([new Uint8Array(data)], { type: mimeType });
   saveAs(blob, filename);
 }
 

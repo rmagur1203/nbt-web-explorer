@@ -181,40 +181,25 @@ export function extractBlocks(
   const blocks: BlockData[] = [];
   
   if (!chunkNBT) {
-    console.warn("chunkNBT is null/undefined");
     return blocks;
   }
-  
-  console.log("Chunk NBT root keys:", Object.keys(chunkNBT));
   
   // Get Level data (Minecraft stores chunk data under "Level" tag)
   // In 1.18+, data might be at root level
   const level = chunkNBT.Level || chunkNBT;
   
   if (!level) {
-    console.warn("No Level data found in chunk");
     return blocks;
   }
-  
-  console.log("Level keys:", Object.keys(level));
   
   // Get sections (can be "Sections" or "sections")
   const sections = level.Sections || level.sections || level.section;
   
   if (!sections) {
-    console.warn("No Sections found in chunk. Available keys:", Object.keys(level));
-    // Try to find any array that might contain block data
-    for (const key of Object.keys(level)) {
-      const val = level[key];
-      if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object') {
-        console.log(`Found potential section data in '${key}':`, val[0] ? Object.keys(val[0]) : 'empty');
-      }
-    }
     return blocks;
   }
   
   if (!Array.isArray(sections)) {
-    console.warn("Sections is not an array:", typeof sections);
     return blocks;
   }
   
@@ -227,16 +212,6 @@ export function extractBlocks(
   // Get biomes
   const biomes = level.Biomes || new Uint8Array(256).fill(4);
 
-  console.log(`Processing chunk at (${xPos}, ${zPos}) with ${sections.length} sections`);
-  
-  // Log first section structure for debugging
-  if (sections.length > 0) {
-    const firstSection = sections.find((s: unknown) => s !== null && s !== undefined);
-    if (firstSection) {
-      console.log("First section keys:", Object.keys(firstSection));
-    }
-  }
-
   for (const section of sections) {
     if (!section) continue;
     
@@ -245,7 +220,6 @@ export function extractBlocks(
     
     // 1.12 and earlier format: Blocks array
     if (section.Blocks) {
-      console.log(`Section Y=${sectionY}: Using Blocks array format`);
       
       for (let i = 0; i < SECTION_SIZE; i++) {
         let blockId = section.Blocks[i];
@@ -277,7 +251,6 @@ export function extractBlocks(
     }
     // 1.13-1.17 format: Palette and BlockStates
     else if (section.Palette && section.BlockStates) {
-      console.log(`Section Y=${sectionY}: Using Palette format (1.13-1.17)`);
       const yOffset = (section.Y ?? 0) * 16;
       const palette = section.Palette;
       
@@ -338,7 +311,6 @@ export function extractBlocks(
     }
     // 1.18+ format: block_states with nested palette and data
     else if (section.block_states) {
-      console.log(`Section Y=${sectionY}: Using block_states format (1.18+)`);
       const blockStates = section.block_states;
       const palette = blockStates.palette;
       const data = blockStates.data;
@@ -452,13 +424,9 @@ export function extractBlocks(
           blockName: cleanName,
         });
       }
-    } else {
-      // Unknown section format, log for debugging
-      console.log(`Section Y=${sectionY}: Unknown format, keys:`, Object.keys(section));
     }
   }
 
-  console.log(`Extracted ${blocks.length} blocks from chunk`);
   return blocks;
 }
 

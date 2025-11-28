@@ -322,11 +322,9 @@ export default function MCAViewerPage() {
 
         try {
           const chunkNBT = await parseChunkNBT(chunkBuffer);
-          console.log(`Parsed chunk (${globalX}, ${globalZ}):`, Object.keys(chunkNBT || {}));
           
           // Extract blocks with global coordinates
           const chunkBlocks = extractBlocks(chunkNBT, globalX, globalZ);
-          console.log(`Extracted ${chunkBlocks.length} blocks from chunk (${globalX}, ${globalZ})`);
           
           allBlocks.push(...chunkBlocks);
 
@@ -338,7 +336,6 @@ export default function MCAViewerPage() {
         }
       }
 
-      console.log(`Total blocks loaded: ${allBlocks.length}, maxY: ${maxY}`);
       setBlocks(allBlocks);
       setSliceY(maxY || 256);
       setLoading(false);

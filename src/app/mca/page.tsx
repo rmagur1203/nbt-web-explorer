@@ -343,51 +343,6 @@ export default function MCAViewerPage() {
     [loadedRegions]
   );
 
-  const handleLoadSample = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/sample.mca');
-      const arrayBuffer = await response.arrayBuffer();
-      const buffer = new Uint8Array(arrayBuffer);
-      const data = parseRegionHeader(buffer);
-      data.filename = 'sample.mca';
-      
-      const heightMap = new Uint8Array(512 * 512);
-      data.heightMap = heightMap;
-      
-      const coords = parseRegionCoords('sample.mca');
-      const region: LoadedRegion = {
-        filename: 'sample.mca',
-        buffer,
-        data,
-        regionX: coords.x,
-        regionZ: coords.z,
-      };
-      
-      setLoadedRegions([region]);
-      setSelectedChunks([]);
-      setBlocks([]);
-      
-      // Load biome data
-      const biomeData = await loadBiomeDataForRegion(region);
-      setChunkBiomeData(biomeData);
-      
-      if (data.availableChunks.length > 0) {
-        const firstChunk = data.availableChunks[0];
-        const globalChunk: [number, number] = [
-          firstChunk[0] + region.regionX * 32,
-          firstChunk[1] + region.regionZ * 32,
-        ];
-        handleSelectChunks([globalChunk], [region]);
-      }
-    } catch (err) {
-      console.error('Failed to load sample:', err);
-      setError('샘플 파일 로드 실패');
-    } finally {
-      setLoading(false);
-    }
-  }, [loadBiomeDataForRegion, handleSelectChunks]);
-
   // Remove a loaded region
   const handleRemoveRegion = useCallback((filename: string) => {
     setLoadedRegions((prev) => prev.filter((r) => r.filename !== filename));
@@ -472,13 +427,6 @@ export default function MCAViewerPage() {
             onChange={handleFileSelect}
             className="hidden"
           />
-          <Button
-            onClick={handleLoadSample}
-            variant="secondary"
-            className="gap-2"
-          >
-            샘플 로드
-          </Button>
           <Button
             onClick={() => fileInputRef.current?.click()}
             variant="outline"

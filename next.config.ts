@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/nbt-web-explorer',
-  assetPrefix: '/nbt-web-explorer/',
+  basePath: basePath || undefined,
+  assetPrefix: basePath ? `${basePath}/` : undefined,
   images: { unoptimized: true },
   webpack: (config) => {
     config.resolve.fallback = {

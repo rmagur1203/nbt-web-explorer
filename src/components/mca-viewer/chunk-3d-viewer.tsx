@@ -7,6 +7,9 @@ import { blockTextures } from "@/lib/mca/textures";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+// Base path for assets
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 // Texture cache for Three.js
 const textureLoader = new THREE.TextureLoader();
 const threeTextureCache = new Map<string, THREE.Texture>();
@@ -69,11 +72,11 @@ function loadThreeTexture(filename: string): Promise<THREE.Texture> {
         const placeholder = new THREE.Texture();
         resolve(placeholder);
       };
-      img.src = `/textures/${filename}`;
+      img.src = `${basePath}/textures/${filename}`;
     } else {
       // For non-animated textures, load normally
       textureLoader.load(
-        `/textures/${filename}`,
+        `${basePath}/textures/${filename}`,
         (texture) => {
           texture.magFilter = THREE.NearestFilter;
           texture.minFilter = THREE.NearestFilter;

@@ -270,6 +270,9 @@ export const blockTextures: Record<string, { top: string; side: string; bottom?:
   sculk: { top: "sculk.png", side: "sculk.png" },
 };
 
+// Base path for assets
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 // Texture cache
 const textureCache = new Map<string, HTMLImageElement>();
 const loadingPromises = new Map<string, Promise<HTMLImageElement>>();
@@ -292,7 +295,7 @@ export function loadTexture(filename: string): Promise<HTMLImageElement> {
       loadingPromises.delete(filename);
       reject(new Error(`Failed to load texture: ${filename}`));
     };
-    img.src = `/textures/${filename}`;
+    img.src = `${basePath}/textures/${filename}`;
   });
   
   loadingPromises.set(filename, promise);
